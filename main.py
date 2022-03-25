@@ -14,24 +14,38 @@ height = 576
 screen = pygame.display.set_mode((width, height))
 points = 0
 pygame.display.set_caption('Hollow Shooter')
-background = pygame.image.load('background_img.png').convert_alpha(screen)
+background = pygame.image.load('sprites pixel/bg1.png').convert_alpha(screen)
 relogio = pygame.time.Clock()
 pygame.mouse.set_visible(False)
 music = pygame.mixer.music.load('rolonaijogoswav (1).wav')
-pygame.mixer.music.set_volume(0.01)
+pygame.mixer.music.set_volume(0.13)
 pygame.mixer.music.play(-1)
-bulletSoundEffect = pygame.mixer.Sound('tirogomes.wav')
+bulletSoundEffect = pygame.mixer.Sound('tiroEfeito.wav')
+bulletSoundEffect.set_volume(0.25)
 myFont = pygame.font.SysFont('Consolas', 30)
+icon = pygame.image.load('sprites pixel/morcegos/morcego1.png')
+pygame.display.set_icon(icon)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        
-        self.image = pygame.image.load('rolonai-idle1 (1) (1).png')
+        self.sprites = []
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle1.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle2.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle3.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle4.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle5.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle6.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle7.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle8.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle9.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/rolonai_idle/rolonai-idle10.png'))
+        self.atual = 0
+        self.image = self.sprites[self.atual]
         playerx = width / 2
         playery = height / 2
         self.rect = self.image.get_rect(center = (playerx, playery))
-        self.speed = 12
+        self.speed = 9
         self.playerLife = 100
         self.canShoot = True
         self.gameOver = False
@@ -69,6 +83,10 @@ class Player(pygame.sprite.Sprite):
             self.canMoveLeft = True
 
     def update(self):
+        self.atual = self.atual + 0.5
+        if self.atual >= len(self.sprites):
+            self.atual = 0
+        self.image = self.sprites[int(self.atual)]
         self.playerInput()
         self.playerCollision()
 
@@ -83,10 +101,18 @@ playerGroup.add(player)
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, xSpeed, ySpeed):
         super().__init__()
-        self.image = pygame.image.load('morcego1.png')
+        pygame.sprite.Sprite.__init__(self)
+        self.sprites = []
+        self.sprites.append(pygame.image.load('sprites pixel/morcegos/morcego1.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/morcegos/morcego2.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/morcegos/morcego3.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/morcegos/morcego4.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/morcegos/morcego5.png'))
+        self.atual = 0
+        self.image = self.sprites[self.atual]
         self.rect = self.image.get_rect(center = (400, 300))
-        self.xSpeed = randint(-10, 10)
-        self.ySpeed = randint(-10, 10)
+        self.xSpeed = randint(-8, 8)
+        self.ySpeed = randint(-8, 8)
         self.rect_sprite = self.rect
     
     def enemyCollision(self):
@@ -109,6 +135,10 @@ class Enemy(pygame.sprite.Sprite):
             player.playerLife -= 1
 
     def update(self):
+        self.atual = self.atual + 0.5
+        if self.atual >= len(self.sprites):
+            self.atual = 0
+        self.image = self.sprites[int(self.atual)]
         self.rect.x += self.xSpeed
         self.rect.y += self.ySpeed
         self.attack()
@@ -117,6 +147,60 @@ class Enemy(pygame.sprite.Sprite):
 enemy = Enemy(randint(-10, 10), randint(-10, 10))
 enemyGroup = pygame.sprite.Group()
 enemyGroup.add(enemy)
+
+class Spider(pygame.sprite.Sprite):
+    def __init__(self, xSpeed, ySpeed):
+        super().__init__()
+        pygame.sprite.Sprite.__init__(self)
+        self.sprites = []
+        self.sprites.append(pygame.image.load('sprites pixel/aranha/aranha1.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/aranha/aranha2.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/aranha/aranha3.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/aranha/aranha4.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/aranha/aranha5.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/aranha/aranha6.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/aranha/aranha7.png'))
+        self.sprites.append(pygame.image.load('sprites pixel/aranha/aranha8.png'))
+        self.atual = 0
+        self.image = self.sprites[self.atual]
+        self.rect = self.image.get_rect(center = (200, 300))
+        self.xSpeed = randint(-4, 4)
+        self.ySpeed = randint(-4, 4)
+        self.rect_sprite = self.rect
+
+    
+    def spiderCollision(self):
+        if self.rect.right >= 570:
+            self.xSpeed *= -1
+            self.image = pygame.transform.flip(self.image, True, False)
+        if self.rect.bottom >= 510:
+            self.ySpeed *= -1
+        if self.rect.centery <= 180:
+            self.ySpeed *= -1
+        if self.rect.left <= 75:
+            self.xSpeed *= -1
+            self.image = pygame.transform.flip(self.image, True, False)
+
+    def createSpider(self):
+        return Spider(randint(-10, 50), randint(-10, 50))
+    
+    def attack(self):
+        if self.rect.colliderect(player.rect):
+            player.playerLife -= 1
+
+    def update(self):
+        self.atual = self.atual + 0.5
+        if self.atual >= len(self.sprites):
+            self.atual = 0
+        self.image = self.sprites[int(self.atual)]
+        self.rect.x += self.xSpeed
+        self.rect.y += self.ySpeed
+        self.attack()
+        self.spiderCollision()
+
+spider = Spider(randint(-5, 5), randint(-5, 5))
+spiderGroup = pygame.sprite.Group()
+spiderGroup.add(spider)
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, bulletx, bullety, targetx, targety):
@@ -148,6 +232,11 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
             enemyGroup.remove(enemy)
             player.points += 1
+
+        if pygame.sprite.spritecollide(self, spiderGroup, True):
+            self.kill()
+            spiderGroup.remove(spider)
+            player.points += 1
         
     def update(self):
 
@@ -163,7 +252,7 @@ bulletGroup = pygame.sprite.Group()
 class Heart(pygame.sprite.Sprite):
     def __init__(self, heartx):
         super().__init__()
-        self.image = pygame.image.load('coracao1.png')
+        self.image = pygame.image.load('sprites pixel/coracao/coracao1.png')
         self.image = pygame.transform.scale(self.image, (64, 56))
         self.rect = self.image.get_rect(center = (heartx, 60))
 
@@ -174,7 +263,7 @@ class Heart(pygame.sprite.Sprite):
         if player.playerLife <= 33:
             heart2.kill()
 
-        if player.playerLife == 0:
+        if player.playerLife <= 0:
             heart1.kill()
             player.kill()
             player.canShoot = False
@@ -183,7 +272,7 @@ class Heart(pygame.sprite.Sprite):
 class Aim(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('mira2.png').convert_alpha()
+        self.image = pygame.image.load('sprites pixel/miras/mira2.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect(center = (0, 0))
 
@@ -205,16 +294,17 @@ while True:
     relogio.tick(30)
     screen.blit(background, (0, 0))
 
-    #desenha a atualiza os itens na tela
     playerGroup.update()
     bulletGroup.update()
-    aimGroup.update()
+    spiderGroup.update()
     enemyGroup.update()
+    aimGroup.update()
     heartGroup.update()
     playerGroup.draw(screen)
     bulletGroup.draw(screen)
-    aimGroup.draw(screen)
+    spiderGroup.draw(screen)
     enemyGroup.draw(screen)
+    aimGroup.draw(screen)
     heartGroup.draw(screen)
 
     for event in pygame.event.get():
@@ -231,11 +321,12 @@ while True:
         screen.blit(gameOverText, (230, 188))
         screen.blit(gameOverText2, (80, 228))
 
-    randomNum = randint(1,75)
+    randomNum = randint(1,100)
     if randomNum == 2:
         enemyGroup.add(enemy.createEnemy())
+    if randomNum == 4:
+        spiderGroup.add(spider.createSpider())
 
     pointsText = myFont.render(f'Pontos: {player.points}', False, (236, 242, 213))
     screen.blit(pointsText, (425, 40))
-        
     pygame.display.update()
