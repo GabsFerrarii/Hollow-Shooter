@@ -29,33 +29,8 @@ bulletSoundEffect = pygame.mixer.Sound('tirogomes.wav')
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.sprites = []
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle1.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle2.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle3.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle4.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle5.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle6.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle7.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle8.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle9.png'))
-        self.sprites.append(pygame.image.load('rolonai_idle/rolonai-idle10.png'))
 
-        self.walkingSprites = []
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha1.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha2.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha3.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha4.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha5.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha6.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha7.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha8.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha9.png'))
-        self.walkingSprites.append(pygame.image.load('rolonai_pisadinha/rolonaipisadinha10.png'))
-
-        self.currentSprite = 0
-
-        self.image = self.sprites[self.currentSprite]
+        self.image = pygame.image.load('rolonai-idle1.png')
         #coordenadas em que o player é criado
         playerx = width / 2
         playery = height / 2
@@ -65,7 +40,7 @@ class Player(pygame.sprite.Sprite):
         #vida do player
         self.playerLife = 100
         self.canShoot = True
-
+        self.gameOver = False
         self.points = 0
 
     def playerInput(self):
@@ -119,30 +94,11 @@ playerGroup.add(player)
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, xSpeed, ySpeed):
         super().__init__()
-        self.sprites = []
-        self.sprites.append(pygame.image.load('morcegalhas/morcego1.png'))
-        self.sprites.append(pygame.image.load('morcegalhas/morcego2.png'))
-        self.sprites.append(pygame.image.load('morcegalhas/morcego3.png'))
-        self.sprites.append(pygame.image.load('morcegalhas/morcego4.png'))
-        self.sprites.append(pygame.image.load('morcegalhas/morcego5.png'))
-
-        self.spritesDeath = []
-        self.spritesDeath.append(pygame.image.load('morcegalhas/morcegomorte1.png'))
-        self.spritesDeath.append(pygame.image.load('morcegalhas/morcegomorte2.png'))
-        self.spritesDeath.append(pygame.image.load('morcegalhas/morcegomorte3.png'))
-        self.currentSprite = 0
-        self.image = self.sprites[self.currentSprite]
+        self.image = pygame.image.load('morcego1.png')
         self.rect = self.image.get_rect(center = (400, 300))
         self.xSpeed = randint(-10, 10)
         self.ySpeed = randint(-10, 10)
         self.rect_sprite = self.rect
-
-    def flyingAnimate(self):
-        self.image = self.sprites[int(self.currentSprite)]
-        self.currentSprite += 0.5
-        if self.currentSprite <= len(self.sprites):
-            self.currentSprite = 0
-            pass
 
     
     def enemyCollision(self):
@@ -167,7 +123,6 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.xSpeed
         self.rect.y += self.ySpeed
-        self.flyingAnimate()
         self.attack()
         self.enemyCollision()
 
@@ -221,50 +176,28 @@ bulletGroup = pygame.sprite.Group()
 class Heart(pygame.sprite.Sprite):
     def __init__(self, heartx):
         super().__init__()
-        self.sprites = []
-        self.sprites.append(pygame.image.load('coraçao/coracao1.png'))
-        self.sprites.append(pygame.image.load('coraçao/coracao2.png'))
-        self.sprites.append(pygame.image.load('coraçao/coracao3.png'))
-        self.sprites.append(pygame.image.load('coraçao/coracao4.png'))
-        self.sprites.append(pygame.image.load('coraçao/coracao5.png'))
-        self.currentSprite = 0
-        self.image = self.sprites[self.currentSprite]
+        self.image = pygame.image.load('coracao1.png')
         self.image = pygame.transform.scale(self.image, (64, 56))
         self.rect = self.image.get_rect(center = (heartx, 60))
 
     def update(self):
-
-        self.image = self.sprites[int(self.currentSprite)]
-        self.image = pygame.transform.scale(self.image, (64, 56))
-        
         if player.playerLife <= 66:
-            self.currentSprite += 0.2
-            if self.currentSprite >= len(self.sprites):
-                self.currentSprite == 0
-                self.kill()
-                pass
+            heart3.kill()
 
         if player.playerLife <= 33:
-            heart2.currentSprite += 0.2
-            if heart2.currentSprite >= len(heart2.sprites):
-                heart2.currentSprite == 0
-                heart2.kill()
-                pass
+            heart2.kill()
 
         if player.playerLife == 0:
-            heart1.currentSprite += 0.2
-            if heart1.currentSprite >= len(heart1.sprites):
-                heart1.currentSprite == 0
-                heart1.kill()
-                pass
+            heart1.kill()
             player.kill()
             player.canShoot = False
+            player.gameOver = True
         
 
 class Aim(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('miras/mira2.png').convert_alpha()
+        self.image = pygame.image.load('mira2.png').convert_alpha()
         self.image = pygame.transform.scale(self.image, (30, 30))
         self.rect = self.image.get_rect(center = (0, 0))
 
@@ -306,6 +239,12 @@ while True:
         if event.type == MOUSEBUTTONDOWN and player.canShoot:
             bulletGroup.add(player.createBullet())
             pygame.mixer.Sound.play(bulletSoundEffect)
+
+    if player.gameOver:
+        gameOverText = myFont.render('Game Over', False, (236, 242, 213))
+        gameOverText2 = myFont.render('Reabra o jogo para recomeçar', False, (236, 242, 213))
+        screen.blit(gameOverText, (230, 188))
+        screen.blit(gameOverText2, (80, 228))
 
     randomNum = randint(1,75)
     if randomNum == 2:
