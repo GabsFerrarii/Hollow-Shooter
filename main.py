@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         
-        self.image = pygame.image.load('rolonai-idle1.png')
+        self.image = pygame.image.load('rolonai-idle1 (1) (1).png')
         playerx = width / 2
         playery = height / 2
         self.rect = self.image.get_rect(center = (playerx, playery))
