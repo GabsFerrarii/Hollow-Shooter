@@ -20,29 +20,23 @@ pygame.mouse.set_visible(False)
 music = pygame.mixer.music.load('rolonaijogoswav (1).wav')
 pygame.mixer.music.set_volume(0.01)
 pygame.mixer.music.play(-1)
-
-myFont = pygame.font.SysFont('Consolas', 30)
-
 bulletSoundEffect = pygame.mixer.Sound('tirogomes.wav')
-
+myFont = pygame.font.SysFont('Consolas', 30)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-
+        
         self.image = pygame.image.load('rolonai-idle1.png')
-        #coordenadas em que o player é criado
         playerx = width / 2
         playery = height / 2
         self.rect = self.image.get_rect(center = (playerx, playery))
-        #velocidade do player
         self.speed = 12
-        #vida do player
         self.playerLife = 100
         self.canShoot = True
         self.gameOver = False
         self.points = 0
-
+    
     def playerInput(self):
         if pygame.key.get_pressed()[pygame.K_w] and self.canMoveUp:
             self.rect.centery -= self.speed 
@@ -74,10 +68,6 @@ class Player(pygame.sprite.Sprite):
         elif self.rect.left > 70:
             self.canMoveLeft = True
 
-    def idleAnimate(self):
-        self.sprites
-        
-
     def update(self):
         self.playerInput()
         self.playerCollision()
@@ -86,7 +76,6 @@ class Player(pygame.sprite.Sprite):
     def createBullet(self):
         return Bullet(self.rect.centerx, self.rect.centery, pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
-#Cria uma instância do player
 player = Player()
 playerGroup = pygame.sprite.GroupSingle()
 playerGroup.add(player)
@@ -99,7 +88,6 @@ class Enemy(pygame.sprite.Sprite):
         self.xSpeed = randint(-10, 10)
         self.ySpeed = randint(-10, 10)
         self.rect_sprite = self.rect
-
     
     def enemyCollision(self):
         if self.rect.right >= 570:
@@ -170,7 +158,6 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centerx = int(self.x)
         self.rect.centery = int(self.y)
 
-#cria um grupo para manter todas as instâncias criadas das balas
 bulletGroup = pygame.sprite.Group()
 
 class Heart(pygame.sprite.Sprite):
@@ -192,7 +179,6 @@ class Heart(pygame.sprite.Sprite):
             player.kill()
             player.canShoot = False
             player.gameOver = True
-        
 
 class Aim(pygame.sprite.Sprite):
     def __init__(self):
@@ -214,7 +200,6 @@ heart2 = Heart(130)
 heart3 = Heart(200)
 heartGroup = pygame.sprite.Group()
 heartGroup.add(heart1, heart2, heart3)
-
 
 while True:
     relogio.tick(30)
